@@ -2,14 +2,13 @@ class SimpleBoard {
   int x, y;
   int size;
   int[][] fields;
+  int currentPlayer = 1;
 
   SimpleBoard (int x, int y, int size) {
     this.size = size;
     this.x = x;
     this.y = y;
     fields = new int[3][3];
-    fields[0][0] = 1;
-    fields[0][1] = 2;
   }
   
   void draw() {
@@ -40,6 +39,15 @@ class SimpleBoard {
       }
     }
     
+  }
+
+  void mousePressed() {
+    int i = (mouseX - x) / (size / 3);
+    int j = (mouseY - y) / (size / 3);
+    if (fields[i][j] == 0) {
+      fields[i][j] = currentPlayer;
+      currentPlayer = 3 - currentPlayer; // Spieler wechseln
+    }
   }
   
 }

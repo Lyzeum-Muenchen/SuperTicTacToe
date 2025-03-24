@@ -9,3 +9,7 @@ void draw(){
     background(255);
     board.draw();
 }
+
+void mousePressed() {
+  board.mousePressed();
+}
