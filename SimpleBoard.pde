@@ -3,6 +3,7 @@ class SimpleBoard {
   int size;
   int[][] fields;
   int currentPlayer = 1;
+  int winner = 0;
 
   SimpleBoard (int x, int y, int size) {
     this.size = size;
@@ -42,12 +43,42 @@ class SimpleBoard {
   }
 
   void mousePressed() {
+    if (winner != 0)
+      return;
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
     if (fields[i][j] == 0) {
       fields[i][j] = currentPlayer;
       currentPlayer = 3 - currentPlayer; // Spieler wechseln
+      checkWin();
     }
+  }
+  
+  int getField(int i, int j) {
+    return fields[i][j];
+  }
+  
+  boolean checkLine(int i, int j, int incI, int incJ) {
+    int candidate = getField(i, j);
+    if (candidate == 0)
+      return false; 
+    while (i < 3 && j < 3){
+      if (candidate != getField(i, j))
+        return false;
+      i += incI;
+      j += incJ;
+    }
+    winner = candidate;
+    return true;
+  }
+  
+  void checkWin() {
+    // Zeilen und Spalten
+    for (int i = 0; i < 3; i++) {
+      if (checkLine(i, 0, 0, 1) || checkLine(0, i, 1, 0)) return;
+    }
+    // Diagonalen
+    if (checkLine(0,0,1,1) || checkLine(0, 2, 1, -1)) return;
   }
   
 }
