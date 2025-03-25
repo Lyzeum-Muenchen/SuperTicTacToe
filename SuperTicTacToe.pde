@@ -1,4 +1,5 @@
 SimpleBoard board;
+int currentPlayer = 1;
 
 void setup(){
   size(600, 600);

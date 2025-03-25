@@ -1,5 +1,6 @@
 class SuperBoard extends SimpleBoard {
   SimpleBoard[][] subBoards;
+  int activeI = -1, activeJ = -1;
 
   SuperBoard(int x, int y, int size) {
     super(x, y, size);
@@ -29,5 +30,33 @@ class SuperBoard extends SimpleBoard {
   @Override
   int getField(int i, int j) {
     return subBoards[i][j].winner;
+  }
+  
+  boolean mousePressed() {
+    if (winner != 0) return false;
+    int i = (mouseX - x) / (size / 3);
+    int j = (mouseY - y) / (size / 3);
+
+    if (activeI != -1 && (i != activeI || j != activeJ)) {
+      return false;
+    }
+
+    if (subBoards[i][j].mousePressed()) {
+      int[] lastMove = subBoards[i][j].getLastMove();
+      activeI = lastMove[0];
+      activeJ = lastMove[1];
+
+      this.lastMove[0] = i;
+      this.lastMove[1] = j;
+
+      if (subBoards[activeI][activeJ].winner != 0) {
+        activeI = -1;
+        activeJ = -1;
+      }
+
+      checkWin();
+      return true;
+    }
+    return false;
   }
 }

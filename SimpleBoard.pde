@@ -2,8 +2,8 @@ class SimpleBoard {
   int x, y;
   int size;
   int[][] fields;
-  int currentPlayer = 1;
   int winner = 0;
+  int[] lastMove = new int[2];
 
   SimpleBoard (int x, int y, int size) {
     this.size = size;
@@ -42,16 +42,23 @@ class SimpleBoard {
     
   }
 
-  void mousePressed() {
+  boolean mousePressed() {
     if (winner != 0)
-      return;
+      return false;
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
     if (fields[i][j] == 0) {
       fields[i][j] = currentPlayer;
       currentPlayer = 3 - currentPlayer; // Spieler wechseln
+      lastMove[0] = i;
+      lastMove[1] = j;
       checkWin();
     }
+    return true;
+  }
+
+  int[] getLastMove() {
+    return lastMove;
   }
   
   int getField(int i, int j) {
