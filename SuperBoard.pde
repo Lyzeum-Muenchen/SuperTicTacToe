@@ -28,15 +28,18 @@ class SuperBoard extends SimpleBoard {
   }
 
   @Override
-  void draw() {
+  void draw(boolean highlight) {
+    int activeI = active[level+1][0];
+    int activeJ = active[level+1][1];
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        subBoards[i][j].draw();
+        subBoards[i][j].draw(highlight && ! firstTurn && activeI == i && activeJ == j);
         if (subBoards[i][j].winner != 0) {
           drawWinningMark(subBoards[i][j].winner, x + i * size / 3, y + j * size / 3, size / 3);
         }
       }
     }
+
     stroke(#000000);
     strokeWeight(6 * thickness);
     line(x + size/3, y + size*0.05, x + size/3, y + size*0.95);

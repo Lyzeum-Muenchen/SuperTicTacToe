@@ -6,7 +6,7 @@ int[][] active = new int[DEPTH+1][2];
 
 void setup(){
   size(640, 640);
-  board = new SuperBoard(20, 20, 600, DEPTH);
+  board = DEPTH > 0 ? new SuperBoard(20, 20, 600, DEPTH) : new SimpleBoard(20,20,600);
 }
 
 void draw(){
@@ -14,7 +14,7 @@ void draw(){
     noStroke();
     fill(255);
     rect(20,20,600,600);
-    board.draw();
+    board.draw(true);
 }
 
 void mousePressed() {
