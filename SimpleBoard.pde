@@ -34,7 +34,7 @@ class SimpleBoard {
             x + size * (- 0.05 + (i+1)/3.), y + size * (0.05 + j/3.));
       }
       else if (fields[i][j] == 2){
-          stroke(#0000FF);
+          stroke(#4287f5);
           circle(x + size * (1/6. + i/3.), y + size * (1/6. + j/3.), size*0.23);
         }
       }
