@@ -3,18 +3,25 @@ class SimpleBoard {
   int size;
   int[][] fields;
   int winner = 0;
-  int[] lastMove = new int[2];
+  float thickness = 1.0; 
+  int level = 0;
 
-  SimpleBoard (int x, int y, int size) {
+  SimpleBoard(int x, int y, int size) {
     this.size = size;
     this.x = x;
     this.y = y;
     fields = new int[3][3];
   }
   
+  SimpleBoard(int x, int y, int size, float thickness, int level) {
+    this(x, y, size);
+    this.thickness = thickness;
+    this.level = level;
+  }
+  
   void draw() {
     stroke(#000000);
-    strokeWeight(4);
+    strokeWeight(4 * thickness);
     
     line(x + size/3, y + size*0.1, x + size/3, y + size*0.9);
     line(x + size*2/3, y + size*0.1, x + size*2/3, y + size*0.9);
@@ -22,7 +29,7 @@ class SimpleBoard {
     line(x + size*0.1, y + size/3, x + size*0.9, y + size/3);
     line(x + size*0.1, y + size*2/3, x + size*0.9, y + size*2/3);
     
-    strokeWeight(4);
+    strokeWeight(4 * thickness);
     noFill();
     for (int i = 0; i < 3; i ++){
       for (int j = 0; j < 3; j ++){
@@ -49,16 +56,11 @@ class SimpleBoard {
     int j = (mouseY - y) / (size / 3);
     if (fields[i][j] == 0) {
       fields[i][j] = currentPlayer;
-      currentPlayer = 3 - currentPlayer; // Spieler wechseln
-      lastMove[0] = i;
-      lastMove[1] = j;
+      active[level][0] = i;
+      active[level][1] = j;
       checkWin();
     }
     return true;
-  }
-
-  int[] getLastMove() {
-    return lastMove;
   }
   
   int getField(int i, int j) {
