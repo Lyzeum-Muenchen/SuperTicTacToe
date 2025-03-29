@@ -2,14 +2,14 @@ class SimpleBoard {
   int x, y;
   int size;
   int[][] fields;
+  int winner; // 1 oder 2, falls Sieger feststeht
 
   SimpleBoard (int x, int y, int size) {
     this.size = size;
     this.x = x;
     this.y = y;
     fields = new int[3][3];
-    fields[0][0] = 1;
-    fields[0][1] = 2;
+    winner = 0;
   }
   
   void draw() {
@@ -39,7 +39,46 @@ class SimpleBoard {
         }
       }
     }
-    
   }
   
+  int getField(int i, int j) {
+    return fields[i][j];
+  }
+  
+  // Startindex und Positionsaenderung
+  boolean checkLine(int i, int j, int incI, int incJ) {
+    int candidate = getField(i, j);
+    if (candidate == 0) {
+      return false;
+    }
+    while(i < 3 && j < 3) {
+      if (candidate != getField(i, j)) {
+        return false;
+      }
+      i += incI;
+      j += incJ;
+    }
+    winner = candidate;
+    return true;
+  }
+  
+  void checkWin() {
+    for (int i = 0; i < 3; i++) {
+      if (checkLine(0, i, 1, 0) || checkLine(i, 0, 0, 1)) return;
+    }
+    // Diagonale
+    checkLine(0, 0, 1, 1);
+    checkLine(2, 0, -1, 1);
+  }
+  
+  void mousePressed() {
+    // Korrekte Position bestimmen
+    int i = (mouseX - x) / (size / 3);
+    int j = (mouseY - y) / (size / 3);
+    if (fields[i][j] == 0 && winner == 0) {
+      fields[i][j] = currentPlayer;
+      currentPlayer = 3 - currentPlayer;
+      checkWin();
+    }
+  }
 }
