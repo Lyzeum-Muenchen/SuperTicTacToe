@@ -35,7 +35,7 @@ class SimpleBoard {
             x + size * (- 0.05 + (i+1)/3.), y + size * (0.05 + j/3.));
       }
       else if (fields[i][j] == 2){
-          stroke(#0000FF);
+          stroke(#4287f5);
           circle(x + size * (1/6. + i/3.), y + size * (1/6. + j/3.), size*0.23);
         }
       }
@@ -70,6 +70,17 @@ class SimpleBoard {
     // Diagonale
     checkLine(0, 0, 1, 1);
     checkLine(2, 0, -1, 1);
+    
+    // falls alle 9 Felder belegt sind, setze WInner auf 3 (= UNENTSCHIEDEN)
+    
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        if (getField(i, j) == 0) {
+          return; // verlasse Funktion sofort, falls ein leeres Feld gefunden wurde
+        }
+      }
+    }
+    winner = 3;
   }
   
   boolean mousePressed() {

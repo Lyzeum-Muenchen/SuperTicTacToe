@@ -3,15 +3,20 @@ SimpleBoard board;
 int currentPlayer = 1; // 1 oder 2
 
 void setup(){
-  size(600, 600);
-  board = new SuperBoard(0, 0, 600);
+  size(640, 640);
+  board = new SuperBoard(20, 20, 600);
 }
 
 void draw(){
-  background(255);
+  background(currentPlayer == 1 ? #FF0000: #4287f5);
+  noStroke();
+  fill(255);
+  rect(20, 20, 600, 600);
   board.draw();
 }
 
 void mousePressed() {
-  board.mousePressed();
+  if (mouseX >= 20 && mouseY >= 20 && mouseX < width - 20 && mouseY < height - 20) {
+    board.mousePressed();
+  }
 }

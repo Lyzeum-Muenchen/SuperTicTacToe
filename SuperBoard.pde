@@ -20,6 +20,9 @@ class SuperBoard extends SimpleBoard {
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
         subBoards[i][j].draw();
+        if (subBoards[i][j].winner != 0) {
+          drawWinningMark(subBoards[i][j].winner, x + i * size / 3, y + j * size / 3, size / 3);
+        }
       }
     }
     stroke(#000000);
@@ -29,6 +32,40 @@ class SuperBoard extends SimpleBoard {
     
     line(x + size * 0.05, y + size / 3, x + size * 0.95, y + size / 3);
     line(x + size * 0.05, y + size * 2 / 3, x + size * 0.95, y + size * 2 / 3);
+  }
+  
+  void drawWinningMark(int winner, int x, int y, int size) {
+    pushStyle();
+    PGraphics overlay = createGraphics(size, size);
+    overlay.beginDraw();
+    float thickness = size / 10.0;
+    if (winner == 1) {
+      // Kreuz zeichnen
+      overlay.noStroke();
+      overlay.fill(#ff0000);
+      overlay.pushMatrix();
+      overlay.translate(size / 2, size / 2); // Verschiebung der Graphic
+      overlay.rotate(PI / 4); // Drehung um 45 Grad
+      overlay.rectMode(CENTER);
+      overlay.rect(0, 0, size, thickness);
+      overlay.popMatrix();
+      overlay.pushMatrix();
+      overlay.translate(size/2, size / 2);
+      overlay.rotate(-PI / 4);
+      overlay.rectMode(CENTER);
+      overlay.rect(0, 0, size, thickness);
+      overlay.popMatrix();
+    } else if (winner == 2) {
+      overlay.noFill();
+      overlay.stroke(#4287f5);
+      overlay.strokeWeight(thickness);
+      overlay.ellipseMode(CENTER);
+      overlay.circle(size / 2, size / 2, size * 0.8 - thickness / 2);
+    }
+    overlay.endDraw();
+    tint(255, 150);
+    image(overlay, x, y);
+    popStyle();
   }
   
   @Override
@@ -53,8 +90,12 @@ class SuperBoard extends SimpleBoard {
       lastMove[0] = i;
       lastMove[1] = j;
       
-      // TODO Spezialfall: Falls subBoard einen Gewinner hat
+      if (subBoards[activeI][activeJ].winner != 0) {
+        activeI = -1;
+        activeJ = -1;
+      }
       
+      checkWin();
       
       return true;
     }
