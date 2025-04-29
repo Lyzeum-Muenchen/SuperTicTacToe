@@ -1,10 +1,12 @@
 SimpleBoard board;
-
-int currentPlayer = 1; // 1 oder 2
+int currentPlayer = 1;
+boolean firstTurn = true;
+int DEPTH = 1;
+int[][] active = new int[DEPTH+1][2];
 
 void setup(){
   size(640, 640);
-  board = new SuperBoard(20, 20, 600);
+  board = new SuperBoard(20, 20, 600, DEPTH);
 }
 
 void draw(){
@@ -16,7 +18,10 @@ void draw(){
 }
 
 void mousePressed() {
-  if (mouseX >= 20 && mouseY >= 20 && mouseX < width - 20 && mouseY < height - 20) {
-    board.mousePressed();
+  if(mouseX >= 20 && mouseY >= 20 && mouseX < width - 20 && mouseY < height - 20){
+    if (board.mousePressed()){
+      currentPlayer = 3 - currentPlayer; // Spieler wechseln
+      firstTurn = false;
+    }
   }
 }

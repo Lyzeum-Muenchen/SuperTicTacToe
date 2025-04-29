@@ -1,19 +1,31 @@
 class SuperBoard extends SimpleBoard {
+  static final float THICKNESS_FACTOR = 0.8;
   SimpleBoard[][] subBoards;
-  int activeI = -1; // Index des aktiven Boardes
-  int activeJ = -1;
 
-  public SuperBoard(int x, int y, int size) {
-    super(x, y, size);
+  SuperBoard(int x, int y, int size, int depth, float currentThickness, int level) {
+    super(x, y, size, currentThickness, level);
     subBoards = new SimpleBoard[3][3];
     int subSize = size / 3;
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        subBoards[i][j] = new SimpleBoard(x + i * subSize, y + j * subSize, subSize);
+        int childX = x + i * subSize;
+        int childY = y + j * subSize;
+        if (depth == 1) {
+          subBoards[i][j] = new SimpleBoard(childX, childY, subSize, currentThickness * THICKNESS_FACTOR, level+1);
+        } else {
+          subBoards[i][j] = new SuperBoard(childX, childY, subSize, depth - 1, currentThickness * THICKNESS_FACTOR, level+1);
+        }
       }
     }
   }
 
+  SuperBoard(int x, int y, int size, int depth) {
+    this(x, y, size, depth, 1.0, 0);
+  }
+  
+  SuperBoard(int x, int y, int size) {
+    this(x, y, size, 1, 1.0, 0);
+  }
 
   @Override
   void draw() {
@@ -26,41 +38,39 @@ class SuperBoard extends SimpleBoard {
       }
     }
     stroke(#000000);
-    strokeWeight(8);
-       line(x + size / 3, y + size * 0.05, x + size / 3, y + size * 0.95);
-    line(x + size * 2 / 3, y + size * 0.05, x + size * 2/3, y + size * 0.95);
-    
-    line(x + size * 0.05, y + size / 3, x + size * 0.95, y + size / 3);
-    line(x + size * 0.05, y + size * 2 / 3, x + size * 0.95, y + size * 2 / 3);
+    strokeWeight(6 * thickness);
+    line(x + size/3, y + size*0.05, x + size/3, y + size*0.95);
+    line(x + size*2/3, y + size*0.05, x + size*2/3, y + size*0.95);
+    line(x + size*0.05, y + size/3, x + size*0.95, y + size/3);
+    line(x + size*0.05, y + size*2/3, x + size*0.95, y + size*2/3);
   }
   
   void drawWinningMark(int winner, int x, int y, int size) {
     pushStyle();
     PGraphics overlay = createGraphics(size, size);
     overlay.beginDraw();
-    float thickness = size / 10.0;
+    float markThickness = (size / 10.0) * thickness;
     if (winner == 1) {
-      // Kreuz zeichnen
       overlay.noStroke();
       overlay.fill(#ff0000);
       overlay.pushMatrix();
       overlay.translate(size / 2, size / 2); // Verschiebung der Graphic
       overlay.rotate(PI / 4); // Drehung um 45 Grad
       overlay.rectMode(CENTER);
-      overlay.rect(0, 0, size, thickness);
+      overlay.rect(0, 0, size, markThickness);
       overlay.popMatrix();
       overlay.pushMatrix();
-      overlay.translate(size/2, size / 2);
+      overlay.translate(size / 2, size / 2);
       overlay.rotate(-PI / 4);
       overlay.rectMode(CENTER);
-      overlay.rect(0, 0, size, thickness);
+      overlay.rect(0, 0, size, markThickness);
       overlay.popMatrix();
     } else if (winner == 2) {
       overlay.noFill();
       overlay.stroke(#4287f5);
-      overlay.strokeWeight(thickness);
+      overlay.strokeWeight(markThickness);
       overlay.ellipseMode(CENTER);
-      overlay.circle(size / 2, size / 2, size * 0.8 - thickness / 2);
+      overlay.circle(size / 2, size / 2, size * 0.8 - markThickness/2);
     }
     overlay.endDraw();
     tint(255, 150);
@@ -68,35 +78,27 @@ class SuperBoard extends SimpleBoard {
     popStyle();
   }
   
+  int getField(int i, int j) {
+    return subBoards[i][j].winner;
+  }
+  
   @Override
   boolean mousePressed() {
-    if (winner != 0) {
-      return false;
-    }
+    if (winner != 0) return false;
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
-    
-    // falls aktives Board gesetz wurde UND Mausklick sich nicht im aktiven SubBoard befindet
-    if (activeI != -1 && (i != activeI || j != activeJ)) {
+
+    int activeI = active[level+1][0];
+    int activeJ = active[level+1][1];
+
+    if (! firstTurn && subBoards[activeI][activeJ].winner == 0  && (i != activeI || j != activeJ)) {
       return false;
     }
-    
+
     if (subBoards[i][j].mousePressed()) {
-      int[] subBoardLastMove = subBoards[i][j].getLastMove();
-      // Position des gesetzen Feldes im Subboard bestimmt naechstes 
-      activeI = subBoardLastMove[0];
-      activeJ = subBoardLastMove[1];
-      
-      lastMove[0] = i;
-      lastMove[1] = j;
-      
-      if (subBoards[activeI][activeJ].winner != 0) {
-        activeI = -1;
-        activeJ = -1;
-      }
-      
+      active[level][0] = i;
+      active[level][1] = j;
       checkWin();
-      
       return true;
     }
     return false;
