@@ -1,25 +1,36 @@
 class SuperBoard extends SimpleBoard {
   SimpleBoard[][] subBoards;
-  int activeI = -1; // Index des aktiven Boardes
-  int activeJ = -1;
+  int depth;
 
-  public SuperBoard(int x, int y, int size) {
+  public SuperBoard(int x, int y, int size, int depth) {
     super(x, y, size);
+    this.depth = depth;
     subBoards = new SimpleBoard[3][3];
     int subSize = size / 3;
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        subBoards[i][j] = new SimpleBoard(x + i * subSize, y + j * subSize, subSize);
+        if (depth == 1){
+          subBoards[i][j] = new SimpleBoard(x + i * subSize, y + j * subSize, subSize);
+        } else {
+          subBoards[i][j] = new SuperBoard(x + i * subSize, y + j * subSize, subSize, depth - 1);
+        }
       }
     }
   }
 
 
   @Override
-  void draw() {
+  void draw(boolean isActive) {
+    int activeI = active[depth-1][0];
+    int activeJ = active[depth-1][1];
+    
+    if (isActive && subBoards[activeI][activeJ].winner != 0){
+      highlight();
+    }
+    
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        subBoards[i][j].draw();
+        subBoards[i][j].draw(isActive && subBoards[i][j].winner == 0 && i == activeI && j == activeJ);
         if (subBoards[i][j].winner != 0) {
           drawWinningMark(subBoards[i][j].winner, x + i * size / 3, y + j * size / 3, size / 3);
         }
@@ -76,29 +87,26 @@ class SuperBoard extends SimpleBoard {
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
     
+    int activeI = active[depth-1][0];
+    int activeJ = active[depth-1][1];
+    
     // falls aktives Board gesetz wurde UND Mausklick sich nicht im aktiven SubBoard befindet
-    if (activeI != -1 && (i != activeI || j != activeJ)) {
+    if ((! firstTurn) && (i != activeI || j != activeJ) && subBoards[activeI][activeJ].winner == 0) {
       return false;
     }
     
     if (subBoards[i][j].mousePressed()) {
-      int[] subBoardLastMove = subBoards[i][j].getLastMove();
-      // Position des gesetzen Feldes im Subboard bestimmt naechstes 
-      activeI = subBoardLastMove[0];
-      activeJ = subBoardLastMove[1];
-      
-      lastMove[0] = i;
-      lastMove[1] = j;
-      
-      if (subBoards[activeI][activeJ].winner != 0) {
-        activeI = -1;
-        activeJ = -1;
-      }
+      active[depth][0] = i;
+      active[depth][1] = j;
       
       checkWin();
       
       return true;
     }
     return false;
+  }
+  
+  int getField (int i, int j){
+    return subBoards[i][j].winner;
   }
 }

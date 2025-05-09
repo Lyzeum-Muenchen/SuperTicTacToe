@@ -3,7 +3,6 @@ class SimpleBoard {
   int size;
   int[][] fields;
   int winner; // 1 oder 2, falls Sieger feststeht
-  int[] lastMove = new int[2];
 
   SimpleBoard (int x, int y, int size) {
     this.size = size;
@@ -13,7 +12,11 @@ class SimpleBoard {
     winner = 0;
   }
   
-  void draw() {
+  void draw(boolean isActive) {
+    if (isActive) {
+      highlight();
+    }
+    
     stroke(#000000);
     strokeWeight(4);
     
@@ -92,14 +95,17 @@ class SimpleBoard {
     if (fields[i][j] == 0) {
       fields[i][j] = currentPlayer;
       currentPlayer = 3 - currentPlayer;
-      lastMove[0] = i;
-      lastMove[1] = j;
+      active[0][0] = i;
+      active[0][1] = j;
       checkWin();
     }
     return true;
   }
   
-  int[] getLastMove() {
-    return lastMove;
+  void highlight() {
+    fill(255,255,0);
+    stroke(0);
+    rect(x, y, size, size);
   }
+
 }
