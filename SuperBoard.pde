@@ -2,17 +2,17 @@ class SuperBoard extends SimpleBoard {
   SimpleBoard[][] subBoards;
   int depth;
 
-  public SuperBoard(int x, int y, int size, int depth) {
-    super(x, y, size);
+  public SuperBoard(Game game, int x, int y, int size, int depth) {
+    super(game, x, y, size);
     this.depth = depth;
     subBoards = new SimpleBoard[3][3];
     int subSize = size / 3;
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
         if (depth == 1){
-          subBoards[i][j] = new SimpleBoard(x + i * subSize, y + j * subSize, subSize);
+          subBoards[i][j] = new SimpleBoard(game, x + i * subSize, y + j * subSize, subSize);
         } else {
-          subBoards[i][j] = new SuperBoard(x + i * subSize, y + j * subSize, subSize, depth - 1);
+          subBoards[i][j] = new SuperBoard(game, x + i * subSize, y + j * subSize, subSize, depth - 1);
         }
       }
     }
@@ -21,8 +21,8 @@ class SuperBoard extends SimpleBoard {
 
   @Override
   void draw(boolean isActive) {
-    int activeI = active[depth-1][0];
-    int activeJ = active[depth-1][1];
+    int activeI = game.active[depth-1][0];
+    int activeJ = game.active[depth-1][1];
     
     if (isActive && subBoards[activeI][activeJ].winner != 0){
       highlight();
@@ -87,17 +87,17 @@ class SuperBoard extends SimpleBoard {
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
     
-    int activeI = active[depth-1][0];
-    int activeJ = active[depth-1][1];
+    int activeI = game.active[depth-1][0];
+    int activeJ = game.active[depth-1][1];
     
     // falls aktives Board gesetz wurde UND Mausklick sich nicht im aktiven SubBoard befindet
-    if ((! firstTurn) && (i != activeI || j != activeJ) && subBoards[activeI][activeJ].winner == 0) {
+    if ((! game.firstTurn) && (i != activeI || j != activeJ) && subBoards[activeI][activeJ].winner == 0) {
       return false;
     }
     
     if (subBoards[i][j].mousePressed()) {
-      active[depth][0] = i;
-      active[depth][1] = j;
+      game.active[depth][0] = i;
+      game.active[depth][1] = j;
       
       checkWin();
       
@@ -109,4 +109,5 @@ class SuperBoard extends SimpleBoard {
   int getField (int i, int j){
     return subBoards[i][j].winner;
   }
+  
 }
