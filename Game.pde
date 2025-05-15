@@ -16,7 +16,8 @@ class Game {
   }
 
   void draw() {
-    board.draw(! firstTurn);
+    if (firstTurn) board.highlight();
+    board.draw(true);
   }
 
   void mousePressed() {

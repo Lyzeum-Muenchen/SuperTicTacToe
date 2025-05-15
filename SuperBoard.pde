@@ -24,13 +24,12 @@ class SuperBoard extends SimpleBoard {
     int activeI = game.active[depth-1][0];
     int activeJ = game.active[depth-1][1];
     
-    if (isActive && subBoards[activeI][activeJ].winner != 0){
-      highlight();
-    }
+    isActive &= (winner == 0);
+    boolean blocked = subBoards[activeI][activeJ].winner != 0;
     
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
-        subBoards[i][j].draw(isActive && subBoards[i][j].winner == 0 && i == activeI && j == activeJ);
+        subBoards[i][j].draw(isActive && (blocked || (i == activeI && j == activeJ)));
         if (subBoards[i][j].winner != 0) {
           drawWinningMark(subBoards[i][j].winner, x + i * size / 3, y + j * size / 3, size / 3);
         }
