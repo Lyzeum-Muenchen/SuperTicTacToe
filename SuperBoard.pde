@@ -37,7 +37,7 @@ class SuperBoard extends SimpleBoard {
       }
     }
     stroke(#000000);
-    strokeWeight(8);
+    strokeWeight(ceil(size*0.01));
        line(x + size / 3, y + size * 0.05, x + size / 3, y + size * 0.95);
     line(x + size * 2 / 3, y + size * 0.05, x + size * 2/3, y + size * 0.95);
     

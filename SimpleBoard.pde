@@ -18,7 +18,7 @@ class SimpleBoard {
     }
     
     stroke(#000000);
-    strokeWeight(4);
+    strokeWeight(ceil(size*0.01));
     
     line(x + size/3, y + size*0.1, x + size/3, y + size*0.9);
     line(x + size*2/3, y + size*0.1, x + size*2/3, y + size*0.9);
@@ -26,7 +26,7 @@ class SimpleBoard {
     line(x + size*0.1, y + size/3, x + size*0.9, y + size/3);
     line(x + size*0.1, y + size*2/3, x + size*0.9, y + size*2/3);
     
-    strokeWeight(4);
+    strokeWeight(ceil(size*0.02));
     noFill();
     for (int i = 0; i < 3; i ++){
       for (int j = 0; j < 3; j ++){
@@ -104,7 +104,7 @@ class SimpleBoard {
   
   void highlight() {
     fill(255,255,0);
-    stroke(0);
+    noStroke();
     rect(x, y, size, size);
   }
 
