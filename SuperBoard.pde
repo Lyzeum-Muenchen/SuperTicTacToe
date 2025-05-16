@@ -17,6 +17,19 @@ class SuperBoard extends SimpleBoard {
       }
     }
   }
+  
+  private SuperBoard(Game game, SuperBoard copy){
+    super(game, copy.x, copy.y, copy.size);
+    subBoards = new SimpleBoard[3][3];
+    this.depth = copy.depth;
+    this.winner = copy.winner;
+    for (int i = 0; i < 3; i ++){
+      for (int j = 0; j < 3; j ++){
+        subBoards[i][j] = copy.subBoards[i][j].copy(game);
+      }
+    }
+    checkWin();
+  }
 
 
   @Override
@@ -86,11 +99,7 @@ class SuperBoard extends SimpleBoard {
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
     
-    int activeI = game.active[depth-1][0];
-    int activeJ = game.active[depth-1][1];
-    
-    // falls aktives Board gesetz wurde UND Mausklick sich nicht im aktiven SubBoard befindet
-    if ((! game.firstTurn) && (i != activeI || j != activeJ) && subBoards[activeI][activeJ].winner == 0) {
+    if (! isValidMove(i, j)){
       return false;
     }
     
@@ -108,5 +117,46 @@ class SuperBoard extends SimpleBoard {
   int getField (int i, int j){
     return subBoards[i][j].winner;
   }
+  
+  void makeRandomMoveIn(int i, int j){
+    subBoards[i][j].makeRandomMove();
+    game.active[depth][0] = i;
+    game.active[depth][1] = j;
+    checkWin();
+  }
+  
+  SimpleBoard copy(Game game){
+    return new SuperBoard(game, this);
+  }
+  
+  ArrayList<Game> allMovesIn(int i, int j) {
+    ArrayList<Game> moves = subBoards[i][j].allMoves();
+    for (Game move : moves){
+      move.active[depth][0] = i;
+      move.active[depth][1] = j;
+    };
+    return moves;
+  }
+  
+  boolean isValidMove(int i, int j){
+    int activeI = game.active[depth-1][0];
+    int activeJ = game.active[depth-1][1];
+    return getField(i,j) == 0 &&
+      (game.firstTurn || getField(activeI,activeJ) != 0 || (i == activeI && j == activeJ));
+  }
+  
+  void makeMove(int[][] move){
+    int i = move[depth][0];
+    int j = move[depth][1];
+    if (! isValidMove(i,j)){
+      print("Illegal Move");
+    } else {
+      subBoards[i][j].makeMove(move);
+    }
+    game.active[depth][0] = i;
+    game.active[depth][1] = j;
+    checkWin();
+  }
+
   
 }
