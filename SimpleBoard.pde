@@ -3,8 +3,10 @@ class SimpleBoard {
   int size;
   int[][] fields;
   int winner; // 1 oder 2, falls Sieger feststeht
+  Game game;
 
-  SimpleBoard (int x, int y, int size) {
+  SimpleBoard (Game game, int x, int y, int size) {
+    this.game = game;
     this.size = size;
     this.x = x;
     this.y = y;
@@ -93,10 +95,9 @@ class SimpleBoard {
     int i = (mouseX - x) / (size / 3);
     int j = (mouseY - y) / (size / 3);
     if (fields[i][j] == 0) {
-      fields[i][j] = currentPlayer;
-      currentPlayer = 3 - currentPlayer;
-      active[0][0] = i;
-      active[0][1] = j;
+      fields[i][j] = game.currentPlayer;
+      game.active[0][0] = i;
+      game.active[0][1] = j;
       checkWin();
     }
     return true;
@@ -106,6 +107,10 @@ class SimpleBoard {
     fill(255,255,0);
     noStroke();
     rect(x, y, size, size);
+  }
+  
+  boolean isValidMove(int i, int j){
+    return fields[i][j] == 0;
   }
 
 }
