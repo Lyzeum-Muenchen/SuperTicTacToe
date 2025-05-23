@@ -99,8 +99,9 @@ class SimpleBoard {
       game.active[0][0] = i;
       game.active[0][1] = j;
       checkWin();
+      return true;
     }
-    return true;
+    return false;
   }
   
   void highlight() {
@@ -111,6 +112,35 @@ class SimpleBoard {
   
   boolean isValidMove(int i, int j){
     return fields[i][j] == 0;
+  }
+  
+  int countValidMoves(){
+    int count = 0;
+    for (int i = 0; i < 3; i++){
+      for (int j = 0; j < 3; j++){
+        if (isValidMove(i,j)) count++;
+      }
+    }
+    return count;
+  }
+  
+  void makeRandomMove(){
+    int move = int(random(countValidMoves()));
+    for (int i = 0; i < 3; i++){
+      for (int j = 0; j < 3; j++){
+        if (isValidMove(i,j)) {
+          if (move == 0) makeRandomMoveIn(i,j);
+          move --;
+        }
+      }
+    }
+  }
+  
+  void makeRandomMoveIn(int i, int j){
+    fields[i][j] = game.currentPlayer;
+    game.active[0][0] = i;
+    game.active[0][1] = j;
+    checkWin();
   }
 
 }

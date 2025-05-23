@@ -4,6 +4,7 @@ class Game {
   final int DEPTH;
   int[][] active;
   boolean firstTurn = true;
+  Player[] players = new Player[2];
 
   Game(int DEPTH, int x, int y, int size) {
     this.DEPTH = DEPTH;
@@ -13,6 +14,10 @@ class Game {
     } else {
       board = new SuperBoard(this, x, y, size, DEPTH);
     }
+    players[0] = new RandomBot(this);
+    players[1] = new RandomBot(this);
+    
+    players[0].makeMove();
   }
   
   void draw() {
@@ -22,15 +27,16 @@ class Game {
   
   void mousePressed() {
     if (mouseX >= board.x && mouseY >= board.y && mouseX < board.x + board.size && mouseY < board.y + board.size) {
-      if (board.mousePressed()){
-        nextTurn();
-      }
+      players[currentPlayer-1].mousePressed();
     }
   }
   
   void nextTurn() {
-    currentPlayer = 3 - currentPlayer;
-    firstTurn = false;
+    if (board.winner == 0){
+      currentPlayer = 3 - currentPlayer;
+      firstTurn = false;
+      players[currentPlayer - 1].makeMove();
+    }
   }
   
   

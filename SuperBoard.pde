@@ -107,4 +107,12 @@ class SuperBoard extends SimpleBoard {
     return getField(i, j) == 0 &&
       (game.firstTurn || getField(activeI, activeJ) != 0 || (i == activeI && j == activeJ));
   }
+  
+  void makeRandomMoveIn(int i, int j){
+    subBoards[i][j].makeRandomMove();
+    game.active[depth][0] = i;
+    game.active[depth][1] = j;
+    checkWin();
+  }
+  
 }
