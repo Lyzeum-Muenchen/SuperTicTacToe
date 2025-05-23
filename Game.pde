@@ -7,6 +7,7 @@ class Game {
   int[][] active;
   boolean firstTurn = true;
   Player[] players = new Player[2];
+  boolean ready = true;
   
   private Game (Game copy){
     board = copy.board.copy(this);
@@ -30,14 +31,17 @@ class Game {
       board = new SuperBoard(this, x, y, size, DEPTH);
     }
     players[0] = new Montecarlo(this, 0);
-    players[1] = new Human(this, 1);
+    players[1] = new Montecarlo(this, 1);
     
-    players[0].makeMove();
   }
 
   void draw() {
     if (firstTurn) board.highlight();
     board.draw(true);
+    if (ready) {
+      ready = false;
+      players[currentPlayer-1].makeMove();
+    }
   }
 
   void mousePressed() {
@@ -52,9 +56,16 @@ class Game {
     currentPlayer = 3 - currentPlayer;
     if (board.winner == 0){
       //println(Arrays.deepToString(board.fields));
-      players[currentPlayer - 1].makeMove();
+      ready = true;
     }
     
+  }
+  
+  void run() {
+    nextTurn();
+    while(board.winner == 0){
+      players[currentPlayer-1].makeMove();
+    }
   }
   
   Game copy(){

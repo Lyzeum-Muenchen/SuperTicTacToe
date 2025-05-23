@@ -2,7 +2,8 @@ Game game;
 
 void setup(){
   size(640, 640);
-  game = new Game(1, 20, 20, 600);
+  game = new Game(2, 20, 20, 600);
+  frameRate(10);
 }
 
 void draw(){

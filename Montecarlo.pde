@@ -45,7 +45,7 @@ class MontecarloTree {
     Game simulation = game.copy();
     simulation.players[0] = new RandomBot(simulation, 0);
     simulation.players[1] = new RandomBot(simulation, 1);
-    simulation.nextTurn();
+    simulation.run();
     if (simulation.board.winner == 1){
       wins [0] += 2;
     }
