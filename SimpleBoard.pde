@@ -73,10 +73,9 @@ class SimpleBoard {
       if (checkLine(0, i, 1, 0) || checkLine(i, 0, 0, 1)) return;
     }
     // Diagonale
-    checkLine(0, 0, 1, 1);
-    checkLine(2, 0, -1, 1);
+    if (checkLine(0, 0, 1, 1) || checkLine(2, 0, -1, 1)) return;
     
-    // falls alle 9 Felder belegt sind, setze WInner auf 3 (= UNENTSCHIEDEN)
+    // falls alle 9 Felder belegt sind, setze Winner auf 3 (= UNENTSCHIEDEN)
     
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
@@ -141,6 +140,17 @@ class SimpleBoard {
     game.active[0][0] = i;
     game.active[0][1] = j;
     checkWin();
+  }
+  
+  SimpleBoard copy (Game game){
+    SimpleBoard copy = new SimpleBoard(game, x, y, size);
+    for(int i = 0; i < 3; i++){
+      for(int j = 0; j < 3; j++){
+        copy.fields[i][j] = fields[i][j];
+      }
+    }
+    copy.checkWin();
+    return copy;
   }
 
 }

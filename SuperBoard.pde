@@ -17,6 +17,10 @@ class SuperBoard extends SimpleBoard {
       }
     }
   }
+  
+  public SuperBoard(Game game, int x, int y, int size){
+    super(game, x, y, size);
+  }
 
 
   @Override
@@ -113,6 +117,19 @@ class SuperBoard extends SimpleBoard {
     game.active[depth][0] = i;
     game.active[depth][1] = j;
     checkWin();
+  }
+  
+  SimpleBoard copy (Game game){
+    SuperBoard copy = new SuperBoard(game, x, y, size);
+    copy.depth = depth;
+    copy.subBoards = new SimpleBoard[3][3];
+    for(int i = 0; i < 3; i++){
+      for(int j = 0; j < 3; j++){
+        copy.subBoards[i][j] = subBoards[i][j].copy(game);
+      }
+    }
+    copy.checkWin();
+    return copy;
   }
   
 }

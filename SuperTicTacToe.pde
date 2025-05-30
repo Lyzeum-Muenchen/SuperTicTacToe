@@ -2,7 +2,7 @@ Game game;
 
 void setup(){
   size(769, 769);
-  game = new Game(2, 20, 20, 729);
+  game = new Game(1, 20, 20, 729);
 }
 
 void draw(){

@@ -4,7 +4,7 @@ class RandomBot extends Player {
     super(game);
   }
   
-  void makeMove(){
+  void makeMove(){    
     game.board.makeRandomMove();
     game.nextTurn();
   }
