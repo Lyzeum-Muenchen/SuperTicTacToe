@@ -15,8 +15,8 @@ class Game {
     } else {
       board = new SuperBoard(this, x, y, size, DEPTH);
     }
-    players[0] = new Human(this);
-    players[1] = new RandomBot(this);
+    players[0] = new MonteCarloBot(this);
+    players[1] = new MonteCarloBot(this);
     
     players[0].makeMove();
   }

@@ -132,4 +132,22 @@ class SuperBoard extends SimpleBoard {
     return copy;
   }
   
+  ArrayList<Game> allMovesIn(int i, int j){
+    ArrayList<Game> moves = subBoards[i][j].allMoves();
+    for (Game move : moves) {
+      move.active[depth][0] = i;
+      move.active[depth][1] = j;
+    }
+    return moves;
+  }
+  
+  void makeMove(int[][] move){
+    int i = move[depth][0];
+    int j = move[depth][1];
+    subBoards[i][j].makeMove(move);
+    game.active[depth][0] = i;
+    game.active[depth][1] = j;
+    checkWin();
+  }
+  
 }

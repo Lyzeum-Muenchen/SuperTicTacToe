@@ -152,5 +152,39 @@ class SimpleBoard {
     copy.checkWin();
     return copy;
   }
+  
+  ArrayList<Game> allMoves() {
+    ArrayList<Game> moves = new ArrayList();
+    for (int i = 0; i < 3; i++){
+      for (int j = 0; j < 3; j++){
+        if (isValidMove(i,j)) {
+          moves.addAll(allMovesIn(i, j));
+        }
+      }
+    }
+    return moves;
+  }
+  
+  ArrayList<Game> allMovesIn(int i, int j){
+    fields[i][j] = game.currentPlayer;
+    Game copy = game.copy();
+    fields[i][j] = 0;
+    copy.active[0][0] = i;
+    copy.active[0][1] = j;
+    copy.nextTurn();
+    
+    ArrayList<Game> moves = new ArrayList();
+    moves.add(copy);
+    return moves;
+  }
+  
+  void makeMove(int[][] move){
+    int i = move[0][0];
+    int j = move[0][1];
+    fields[i][j] = game.currentPlayer;
+    game.active[0][0] = i;
+    game.active[0][1] = j;
+    checkWin();
+  }
 
 }
