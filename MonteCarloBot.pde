@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 class MonteCarloBot extends Player {
   
   MonteCarloTree tree;
@@ -7,7 +9,28 @@ class MonteCarloBot extends Player {
   }
   
   void makeMove() {
-    tree = new MonteCarloTree(game.copy());
+    
+    if (game.firstTurn) {
+      int[][] firstMove = new int[game.DEPTH+1][2];
+      for (int i = 0; i < game.DEPTH + 1; i++){
+        firstMove[i][0] = 1;
+        firstMove[i][1] = 1;
+      }
+      game.board.makeMove(firstMove);
+      game.nextTurn();
+      return;
+    }
+    
+    if (tree != null && tree.children != null){
+      for (MonteCarloTree move : tree.children){
+        if(Arrays.deepEquals(game.active, move.game.active)){
+          tree = move;
+          break;
+        }
+      }
+    } else {  
+      tree = new MonteCarloTree(game.copy());
+    }
     
     for(int i = 0; i < 10000; i++){
       tree.expand();
@@ -17,8 +40,9 @@ class MonteCarloBot extends Player {
     MonteCarloTree bestMove = null;
     
     for (MonteCarloTree move : tree.children) {
-      
+            
       float score = move.ratio();
+      //println("Move: " + Arrays.deepToString(move.game.active) + " Score: "+score+" Wins: " + Arrays.toString(move.wins));
       
       if (score >= bestScore){
         bestScore = score;
@@ -28,7 +52,7 @@ class MonteCarloBot extends Player {
     }
     
     println("Gewinnwahrscheinlichkeit: " + bestScore);
-    
+    tree = bestMove;
     game.board.makeMove(bestMove.game.active);
     game.nextTurn();
     

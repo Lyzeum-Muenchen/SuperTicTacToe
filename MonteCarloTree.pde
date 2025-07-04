@@ -1,4 +1,5 @@
 class MonteCarloTree {
+  final int PLAYOUTS = 1;
   Game game;
   ArrayList<MonteCarloTree> children;
   int[] wins;
@@ -6,7 +7,7 @@ class MonteCarloTree {
   MonteCarloTree(Game game) {
     this.game = game;
     wins = new int[2];
-    for (int i = 0; i < 10; i++){
+    for (int i = 0; i < PLAYOUTS; i++){
       playout();
     }
   }
@@ -62,14 +63,14 @@ class MonteCarloTree {
     } else {
       switch (game.board.winner) {
         case 1:
-          wins[0] += 20;
+          wins[0] += 20 * PLAYOUTS;
           break;
         case 2:
-          wins[1] += 20;
+          wins[1] += 20 * PLAYOUTS;
           break;
         default:
-          wins[0] += 10;
-          wins[1] += 10;
+          wins[0] += 10 * PLAYOUTS;
+          wins[1] += 10 * PLAYOUTS;
         }
     }
   }
