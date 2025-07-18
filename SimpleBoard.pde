@@ -155,6 +155,7 @@ class SimpleBoard {
   
   ArrayList<Game> allMoves() {
     ArrayList<Game> moves = new ArrayList();
+    if (winner != 0) return moves;
     for (int i = 0; i < 3; i++){
       for (int j = 0; j < 3; j++){
         if (isValidMove(i,j)) {

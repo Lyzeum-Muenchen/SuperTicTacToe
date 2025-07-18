@@ -51,7 +51,7 @@ class MonteCarloBot extends Player {
       
     }
     
-    println("Gewinnwahrscheinlichkeit: " + bestScore);
+    println("Gewinnwahrscheinlichkeit ("+game.currentPlayer+"): " + bestScore);
     tree = bestMove;
     game.board.makeMove(bestMove.game.active);
     game.nextTurn();
