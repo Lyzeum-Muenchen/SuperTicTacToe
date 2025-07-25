@@ -3,9 +3,11 @@ import java.util.Arrays;
 class MonteCarloBot extends Player {
   
   MonteCarloTree tree;
+  int difficulty;
   
-  public MonteCarloBot(Game game) {
+  public MonteCarloBot(Game game, int difficulty) {
     super(game);
+    this.difficulty = difficulty;
   }
   
   void makeMove() {
@@ -32,7 +34,7 @@ class MonteCarloBot extends Player {
       tree = new MonteCarloTree(game.copy());
     }
     
-    for(int i = 0; i < 10000; i++){
+    for(int i = 0; i < difficulty; i++){
       tree.expand();
     }
     
